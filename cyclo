@@ -1,0 +1,101 @@
+1. int main (intMaxCols, int Iterations, intMaxCount)
+2. {
+3. int count = 0, totals[MaxCols], val = 0;
+4. memset (totals, 0, MaxCols * sizeof(int));
+5
+Answer
+       [Start]
+          │
+          ▼
+   [If (MaxCount > Iterations?)] ───► [End]
+          │
+          ▼
+    [While (count < Iterations?)] ───► [End]
+          │
+          ▼
+      [Generate val]
+          │
+          ▼
+    [Increment totals[val]]
+          │
+          ▼
+    [If (totals[val] > MaxCount?)]
+        │       │
+    Yes ▼       ▼ No
+  [Set totals   Continue
+    to Max]        │
+        └───────┘
+          │
+          ▼
+    [Increment count]
+          │
+          ▼
+    (Back to While Condition)
+
+We use the formula:
+V(G)=E−N+2P
+Where:
+E (Edges) = 9
+N (Nodes) = 7
+P (Connected components, usually 1) = 1
+
+V(G)=9−7+2(1)=4
+
+
+second 
+#include &lt;stdio.h&gt;
+int main()
+{
+int a = 10;
+int b = 20;
+int result = 0;
+for (int i = 0; i &lt; a; i++)
+        [Start]
+           │
+           ▼
+      [For Loop (i < a)]
+           │
+           ▼
+    ┌──────────────┐
+    │  Switch Case │  
+    └──┬──┬───────┘
+       │  │  
+       ▼  ▼  
+  [Case 0] [Case 1] [Default Case]
+       │    │     │
+       └────┴─────┘
+           │
+           ▼
+    [While Loop (j < b)]
+           │
+           ▼
+    ┌───────────┐
+    │ If (j % 2)│
+    └──┬──┬─────┘
+       │  │
+       ▼  ▼  
+    [Even] [Odd]
+       │    │
+       └────┴────┐
+                 ▼
+         [Do-While Loop (k < 5)]
+                 │
+        ┌──────────────┐
+        │ If (k % 5 == 0) │
+        └──┬───────┬──────┘
+           ▼       ▼
+    [Multiply]  [Divide]
+           │       │
+           └───────┘
+                 ▼
+               [End]
+We use McCabe’s formula:
+V(G)=E−N+2P
+Where:
+E (Edges) = 13
+N (Nodes) = 11
+P (Connected components, usually 1) = 1
+
+V(G)=13−11+2(1)=4
+✅ Cyclomatic Complexity = 4
+This means 4 independent paths exist in the program.
