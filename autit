@@ -1,0 +1,727 @@
+; Problem 1: A script that assigns custom actions to specific hotkeys.
+#include <MsgBoxConstants.au3>
+
+HotKeySet("^+s", "TakeScreenshot") ; Ctrl+Shift+S
+HotKeySet("^+n", "OpenNotepad") ; Ctrl+Shift+N
+HotKeySet("^+c", "ShowCalendar") ; Ctrl+Shift+C
+HotKeySet("^q", "ExitScript") ; Ctrl+Q
+
+MsgBox($MB_SYSTEMMODAL, "Hotkey Script", "Hotkeys are now active:" & @CRLF & _
+    "Ctrl+Shift+S: Take Screenshot" & @CRLF & _
+    "Ctrl+Shift+N: Open Notepad" & @CRLF & _
+    "Ctrl+Shift+C: Show Calendar" & @CRLF & _
+    "Ctrl+Q: Exit Script")
+
+; Main loop to keep the script running
+While 1
+    Sleep(100) ; Sleep to reduce CPU usage
+WEnd
+
+; Hotkey Functions
+Func TakeScreenshot()
+    MsgBox($MB_SYSTEMMODAL, "Action Triggered", "Taking Screenshot")
+    ; Add actual screenshot functionality here
+EndFunc
+
+Func OpenNotepad()
+    MsgBox($MB_SYSTEMMODAL, "Action Triggered", "Opening Notepad")
+    Run("notepad.exe")
+EndFunc
+
+Func ShowCalendar()
+    MsgBox($MB_SYSTEMMODAL, "Action Triggered", "Showing Calendar")
+    Run("calc.exe") ; Replace with calendar app if available
+EndFunc
+
+Func ExitScript()
+    MsgBox($MB_SYSTEMMODAL, "Exit", "Exiting script...")
+    Exit
+EndFunc
+
+; Problem 2: A GUI with a button that opens a file dialog. When the user selects a file, display the file's path in a text box.
+#include <ButtonConstants.au3>
+#include <EditConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+#include <FileConstants.au3>
+#include <MsgBoxConstants.au3>
+
+; Create GUI
+$Form = GUICreate("File Selector", 400, 120)
+$Button = GUICtrlCreateButton("Open File", 150, 20, 100, 30)
+$TextBox = GUICtrlCreateEdit("", 20, 60, 360, 40, $ES_READONLY)
+GUISetState(@SW_SHOW)
+
+While 1
+    $nMsg = GUIGetMsg()
+    Switch $nMsg
+        Case $GUI_EVENT_CLOSE
+            Exit
+        Case $Button
+            OpenFileDialog()
+    EndSwitch
+WEnd
+
+Func OpenFileDialog()
+    ; Display open file dialog
+    Local $sFileOpenDialog = FileOpenDialog("Select a File", @DesktopDir, "All Files (*.*)", $FD_FILEMUSTEXIST)
+    If @error Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "No file selected.")
+    Else
+        ; Display the file path in the edit control
+        GUICtrlSetData($TextBox, $sFileOpenDialog)
+    EndIf
+EndFunc
+
+; Problem 3: A script that takes a screenshot when a specific hotkey (e.g., PrintScreen) is pressed and saves it to a predefined folder with a timestamp in the filename.
+#include <ScreenCapture.au3>
+#include <Date.au3>
+#include <MsgBoxConstants.au3>
+
+; Define the folder to save screenshots
+$screenshotFolder = @MyDocumentsDir & "\Screenshots\"
+; Create the folder if it doesn't exist
+If Not FileExists($screenshotFolder) Then
+    DirCreate($screenshotFolder)
+EndIf
+
+; Register PrintScreen hotkey
+HotKeySet("{PRINTSCREEN}", "CaptureScreen")
+HotKeySet("^q", "ExitScript") ; Ctrl+Q to exit
+
+MsgBox($MB_SYSTEMMODAL, "Screenshot Tool", "Press PrintScreen to take a screenshot." & @CRLF & _
+    "Screenshots will be saved to: " & $screenshotFolder & @CRLF & _
+    "Press Ctrl+Q to exit.")
+
+; Main loop to keep the script running
+While 1
+    Sleep(100) ; Sleep to reduce CPU usage
+WEnd
+
+Func CaptureScreen()
+    ; Generate timestamp for the filename
+    Local $timestamp = @YEAR & "-" & @MON & "-" & @MDAY & "_" & @HOUR & "-" & @MIN & "-" & @SEC
+    Local $filename = $screenshotFolder & "Screenshot_" & $timestamp & ".jpg"
+    
+    ; Capture the screen
+    _ScreenCapture_Capture($filename)
+    
+    ; Show a notification
+    MsgBox($MB_SYSTEMMODAL, "Screenshot Taken", "Screenshot saved to:" & @CRLF & $filename, 3)
+EndFunc
+
+Func ExitScript()
+    Exit
+EndFunc
+
+; Problem 4: A script that generates a log file whenever it's run. The log file should: Record the current date and time. Append a simple message like "Script executed successfully."
+#include <FileConstants.au3>
+#include <MsgBoxConstants.au3>
+#include <Date.au3>
+
+; Define the log file path
+$logFilePath = @ScriptDir & "\script_log.txt"
+
+; Get current date and time
+$currentDateTime = _NowCalc()
+
+; Open the log file in append mode
+$fileHandle = FileOpen($logFilePath, $FO_APPEND)
+If $fileHandle = -1 Then
+    MsgBox($MB_SYSTEMMODAL, "Error", "Unable to open log file.")
+    Exit
+EndIf
+
+; Write the log entry
+FileWriteLine($fileHandle, $currentDateTime & " - Script executed successfully.")
+FileClose($fileHandle)
+
+MsgBox($MB_SYSTEMMODAL, "Log Created", "Log entry added to: " & $logFilePath)
+
+; Problem 5: Write a script to identify and move all .lnk (shortcut) files from the desktop to a folder called "Shortcuts" on the desktop.
+#include <File.au3>
+#include <Array.au3>
+#include <MsgBoxConstants.au3>
+
+; Define desktop and target folder paths
+$desktopPath = @DesktopDir
+$shortcutsFolder = $desktopPath & "\Shortcuts"
+
+; Create the Shortcuts folder if it doesn't exist
+If Not FileExists($shortcutsFolder) Then
+    DirCreate($shortcutsFolder)
+EndIf
+
+; Search for .lnk files on the desktop
+$fileSearch = FileFindFirstFile($desktopPath & "\*.lnk")
+If $fileSearch = -1 Then
+    MsgBox($MB_SYSTEMMODAL, "Information", "No shortcut files found on the desktop.")
+    Exit
+EndIf
+
+; Initialize counter
+$moveCount = 0
+
+; Process all .lnk files
+While 1
+    $file = FileFindNextFile($fileSearch)
+    If @error Then ExitLoop
+    
+    ; Skip if this is the "Shortcuts" folder itself
+    If $file = "Shortcuts.lnk" Then ContinueLoop
+    
+    ; Move the file to the Shortcuts folder
+    If FileMove($desktopPath & "\" & $file, $shortcutsFolder & "\" & $file, $FC_OVERWRITE) Then
+        $moveCount += 1
+    EndIf
+WEnd
+
+; Close the search handle
+FileClose($fileSearch)
+
+; Display result
+MsgBox($MB_SYSTEMMODAL, "Operation Complete", $moveCount & " shortcut files moved to " & $shortcutsFolder)
+
+; Problem 6: A script that identifies a specific window (e.g., Notepad) by its title and resizes it to specific dimensions (e.g., 800x600 pixels).
+#include <MsgBoxConstants.au3>
+#include <WinAPI.au3>
+
+; Target window title (partial match is allowed)
+$windowTitle = "Notepad"
+$newWidth = 800
+$newHeight = 600
+
+; Run Notepad if it's not already open
+If Not WinExists("[TITLE:" & $windowTitle & "]") Then
+    Run("notepad.exe")
+    WinWait("[TITLE:" & $windowTitle & "]")
+EndIf
+
+; Get window handle
+$winHandle = WinGetHandle("[TITLE:" & $windowTitle & "]")
+If @error Then
+    MsgBox($MB_SYSTEMMODAL, "Error", "Could not find a window with the title: " & $windowTitle)
+    Exit
+EndIf
+
+; Resize the window
+WinMove($winHandle, "", Default, Default, $newWidth, $newHeight)
+
+MsgBox($MB_SYSTEMMODAL, "Success", "Window '" & $windowTitle & "' has been resized to " & $newWidth & "x" & $newHeight & " pixels.")
+
+; Problem 7: A script that opens a specified .txt file, reads its contents, and displays them in a message box or GUI.
+#include <ButtonConstants.au3>
+#include <EditConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+#include <MsgBoxConstants.au3>
+
+; Define the file path - change this to your desired file
+$filePath = @ScriptDir & "\example.txt"
+
+; Create a sample file if it doesn't exist
+If Not FileExists($filePath) Then
+    $fileHandle = FileOpen($filePath, $FO_CREATEPATH + $FO_OVERWRITE)
+    FileWrite($fileHandle, "This is a sample text file." & @CRLF & "Created by AutoIt script." & @CRLF & "For testing purposes.")
+    FileClose($fileHandle)
+EndIf
+
+; Read the file content
+$fileContent = FileRead($filePath)
+If @error Then
+    MsgBox($MB_SYSTEMMODAL, "Error", "Could not read the file: " & $filePath)
+    Exit
+EndIf
+
+; Create GUI to display the content
+$Form = GUICreate("File Content Viewer", 500, 300)
+$Edit = GUICtrlCreateEdit($fileContent, 10, 10, 480, 230, BitOR($ES_AUTOVSCROLL, $ES_READONLY))
+$CloseButton = GUICtrlCreateButton("Close", 200, 250, 100, 30)
+GUISetState(@SW_SHOW)
+
+; GUI Message Loop
+While 1
+    $nMsg = GUIGetMsg()
+    Switch $nMsg
+        Case $GUI_EVENT_CLOSE, $CloseButton
+            Exit
+    EndSwitch
+WEnd
+
+; Problem 8: A script that takes user input (e.g., via an input box or GUI) to specify a folder name. The script should then create the folder in a predefined location.
+#include <ButtonConstants.au3>
+#include <EditConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+#include <MsgBoxConstants.au3>
+
+; Define the base location where folders will be created
+$baseLocation = @MyDocumentsDir
+
+; Create the GUI
+$Form = GUICreate("Folder Creator", 400, 150)
+$Label = GUICtrlCreateLabel("Enter folder name to create in " & $baseLocation & ":", 20, 20, 360, 20)
+$Input = GUICtrlCreateInput("", 20, 50, 360, 25)
+$CreateButton = GUICtrlCreateButton("Create Folder", 100, 90, 100, 30)
+$CancelButton = GUICtrlCreateButton("Cancel", 220, 90, 80, 30)
+GUISetState(@SW_SHOW)
+
+; GUI Message Loop
+While 1
+    $nMsg = GUIGetMsg()
+    Switch $nMsg
+        Case $GUI_EVENT_CLOSE, $CancelButton
+            Exit
+        Case $CreateButton
+            CreateFolder()
+    EndSwitch
+WEnd
+
+Func CreateFolder()
+    ; Get the folder name from the input field
+    $folderName = GUICtrlRead($Input)
+    
+    ; Check if folder name is valid
+    If StringStripWS($folderName, $STR_STRIPALL) = "" Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Please enter a valid folder name.")
+        Return
+    EndIf
+    
+    ; Create the full path
+    $folderPath = $baseLocation & "\" & $folderName
+    
+    ; Check if folder already exists
+    If FileExists($folderPath) Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Folder already exists: " & $folderPath)
+        Return
+    EndIf
+    
+    ; Create the folder
+    If DirCreate($folderPath) Then
+        MsgBox($MB_SYSTEMMODAL, "Success", "Folder created: " & $folderPath)
+        GUICtrlSetData($Input, "") ; Clear the input field
+    Else
+        MsgBox($MB_SYSTEMMODAL, "Error", "Failed to create folder: " & $folderPath)
+    EndIf
+EndFunc
+
+; Problem 9: A script that constantly checks which window is currently active and logs the window titles to a text file.
+#include <MsgBoxConstants.au3>
+#include <FileConstants.au3>
+#include <Date.au3>
+
+; Define the log file path
+$logFilePath = @ScriptDir & "\window_log.txt"
+
+; Initialize variables
+$lastActiveWindow = ""
+$fileHandle = -1
+
+; Open the log file
+$fileHandle = FileOpen($logFilePath, $FO_APPEND)
+If $fileHandle = -1 Then
+    MsgBox($MB_SYSTEMMODAL, "Error", "Unable to open log file: " & $logFilePath)
+    Exit
+EndIf
+
+; Start monitoring message
+$timestamp = _NowCalc()
+FileWriteLine($fileHandle, $timestamp & " - Window monitoring started")
+
+; Display instructions
+MsgBox($MB_SYSTEMMODAL, "Window Logger", "The script will now run in the background and log active window titles." & @CRLF & _
+    "Press Ctrl+Alt+X to stop the script." & @CRLF & _
+    "Log file: " & $logFilePath)
+
+; Register a hotkey to exit
+HotKeySet("^!x", "ExitScript") ; Ctrl+Alt+X
+
+; Main monitoring loop
+While 1
+    ; Get the currently active window
+    $activeWindow = WinGetTitle("[ACTIVE]")
+    
+    ; If it's different from the last active window, log it
+    If $activeWindow <> $lastActiveWindow And $activeWindow <> "" Then
+        $timestamp = _NowCalc()
+        FileWriteLine($fileHandle, $timestamp & " - " & $activeWindow)
+        $lastActiveWindow = $activeWindow
+    EndIf
+    
+    ; Small delay to reduce CPU usage
+    Sleep(500)
+WEnd
+
+Func ExitScript()
+    ; Log the ending time
+    $timestamp = _NowCalc()
+    FileWriteLine($fileHandle, $timestamp & " - Window monitoring stopped")
+    
+    ; Close the file handle
+    FileClose($fileHandle)
+    
+    ; Exit the script
+    Exit
+EndFunc
+
+; Problem 10: A script that asks the user for a phrase and a number, then repeatedly types the phrase that many times into any open application.
+#include <MsgBoxConstants.au3>
+#include <EditConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+
+; Create the GUI
+$Form = GUICreate("Text Repeater", 400, 200)
+$LabelPhrase = GUICtrlCreateLabel("Enter the phrase to repeat:", 20, 20, 360, 20)
+$InputPhrase = GUICtrlCreateInput("", 20, 40, 360, 25)
+$LabelCount = GUICtrlCreateLabel("Enter the number of times to repeat:", 20, 75, 360, 20)
+$InputCount = GUICtrlCreateInput("", 20, 95, 360, 25, $ES_NUMBER)
+$RepeatButton = GUICtrlCreateButton("Start Repeating (5s delay)", 100, 140, 200, 30)
+$CancelButton = GUICtrlCreateButton("Cancel", 160, 180, 80, 20)
+GUISetState(@SW_SHOW)
+
+; GUI Message Loop
+While 1
+    $nMsg = GUIGetMsg()
+    Switch $nMsg
+        Case $GUI_EVENT_CLOSE, $CancelButton
+            Exit
+        Case $RepeatButton
+            RepeatText()
+    EndSwitch
+WEnd
+
+Func RepeatText()
+    ; Get the inputs
+    $phrase = GUICtrlRead($InputPhrase)
+    $count = Number(GUICtrlRead($InputCount))
+    
+    ; Validate inputs
+    If $phrase = "" Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Please enter a phrase to repeat.")
+        Return
+    EndIf
+    
+    If $count <= 0 Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Please enter a positive number of repetitions.")
+        Return
+    EndIf
+    
+    ; Inform the user
+    MsgBox($MB_SYSTEMMODAL, "Ready", "Click OK, then focus on the target application within 5 seconds.")
+    
+    ; Give the user time to focus on the target application
+    Sleep(5000)
+    
+    ; Send the text repeatedly
+    For $i = 1 To $count
+        Send($phrase)
+        Send("{ENTER}")
+    Next
+    
+    ; Notify when done
+    MsgBox($MB_SYSTEMMODAL, "Complete", "Text has been repeated " & $count & " times.")
+EndFunc
+
+; Problem 11: A script that calculates the total size of a specified folder and displays the result in a message box.
+#include <MsgBoxConstants.au3>
+#include <FileConstants.au3>
+#include <ButtonConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+
+; Create the GUI
+$Form = GUICreate("Folder Size Calculator", 500, 150)
+$Label = GUICtrlCreateLabel("Select a folder to calculate its size:", 20, 20, 460, 20)
+$InputPath = GUICtrlCreateInput("", 20, 50, 380, 25, $ES_READONLY)
+$BrowseButton = GUICtrlCreateButton("...", 410, 50, 50, 25)
+$CalculateButton = GUICtrlCreateButton("Calculate Size", 150, 90, 120, 30)
+$CancelButton = GUICtrlCreateButton("Cancel", 280, 90, 80, 30)
+GUISetState(@SW_SHOW)
+
+; GUI Message Loop
+While 1
+    $nMsg = GUIGetMsg()
+    Switch $nMsg
+        Case $GUI_EVENT_CLOSE, $CancelButton
+            Exit
+        Case $BrowseButton
+            BrowseForFolder()
+        Case $CalculateButton
+            CalculateFolderSize()
+    EndSwitch
+WEnd
+
+Func BrowseForFolder()
+    ; Display folder selection dialog
+    Local $folderPath = FileSelectFolder("Select a folder", "")
+    If Not @error Then
+        GUICtrlSetData($InputPath, $folderPath)
+    EndIf
+EndFunc
+
+Func CalculateFolderSize()
+    ; Get the folder path
+    $folderPath = GUICtrlRead($InputPath)
+    
+    ; Check if a folder was selected
+    If $folderPath = "" Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Please select a folder first.")
+        Return
+    EndIf
+    
+    ; Check if the folder exists
+    If Not FileExists($folderPath) Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "The selected folder does not exist.")
+        Return
+    EndIf
+    
+    ; Calculate the size
+    $totalSize = DirGetSize($folderPath)
+    
+    ; Check for errors
+    If @error Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Error calculating folder size.")
+        Return
+    EndIf
+    
+    ; Format the size in a readable format
+    $sizeInKB = Round($totalSize / 1024, 2)
+    $sizeInMB = Round($totalSize / (1024 * 1024), 2)
+    $sizeInGB = Round($totalSize / (1024 * 1024 * 1024), 2)
+    
+    ; Display the result
+    MsgBox($MB_SYSTEMMODAL, "Folder Size", "Size of " & $folderPath & ":" & @CRLF & @CRLF & _
+        "Bytes: " & $totalSize & @CRLF & _
+        "KB: " & $sizeInKB & @CRLF & _
+        "MB: " & $sizeInMB & @CRLF & _
+        "GB: " & $sizeInGB)
+EndFunc
+
+; Problem 12: A script that runs in the background and logs the titles of all windows that the user switches to, saving the log to a text file.
+#include <MsgBoxConstants.au3>
+#include <FileConstants.au3>
+#include <Date.au3>
+
+; Define the log file path
+$logFilePath = @ScriptDir & "\window_switch_log.txt"
+
+; Initialize variables
+$lastActiveWindow = WinGetTitle("[ACTIVE]")
+$fileHandle = -1
+
+; Open the log file
+$fileHandle = FileOpen($logFilePath, $FO_APPEND)
+If $fileHandle = -1 Then
+    MsgBox($MB_SYSTEMMODAL, "Error", "Unable to open log file: " & $logFilePath)
+    Exit
+EndIf
+
+; Start monitoring message
+$timestamp = _NowCalc()
+FileWriteLine($fileHandle, $timestamp & " - Window switch monitoring started")
+FileWriteLine($fileHandle, $timestamp & " - Current window: " & $lastActiveWindow)
+
+; Display instructions
+MsgBox($MB_SYSTEMMODAL, "Window Switch Logger", "The script will now run in the background and log window switches." & @CRLF & _
+    "Press Ctrl+Alt+X to stop the script." & @CRLF & _
+    "Log file: " & $logFilePath)
+
+; Register a hotkey to exit
+HotKeySet("^!x", "ExitScript") ; Ctrl+Alt+X
+
+; Main monitoring loop
+While 1
+    ; Get the currently active window
+    $activeWindow = WinGetTitle("[ACTIVE]")
+    
+    ; If it's different from the last active window, log it as a switch
+    If $activeWindow <> $lastActiveWindow And $activeWindow <> "" Then
+        $timestamp = _NowCalc()
+        FileWriteLine($fileHandle, $timestamp & " - Switched to: " & $activeWindow)
+        $lastActiveWindow = $activeWindow
+    EndIf
+    
+    ; Small delay to reduce CPU usage
+    Sleep(200)
+WEnd
+
+Func ExitScript()
+    ; Log the ending time
+    $timestamp = _NowCalc()
+    FileWriteLine($fileHandle, $timestamp & " - Window switch monitoring stopped")
+    
+    ; Close the file handle
+    FileClose($fileHandle)
+    
+    ; Exit the script
+    Exit
+EndFunc
+
+; Problem 13: A script that checks if a specific process (e.g., notepad.exe) is running. If it is, display a message; otherwise, start the application.
+#include <MsgBoxConstants.au3>
+#include <Process.au3>
+
+; Define the process to check
+$processName = "notepad.exe"
+$applicationPath = "notepad.exe"
+
+; Check if the process is running
+$processExists = ProcessExists($processName)
+
+If $processExists Then
+    ; Process is running - display a message
+    MsgBox($MB_SYSTEMMODAL, "Process Check", "The process '" & $processName & "' is already running." & @CRLF & _
+        "Process ID: " & $processExists)
+Else
+    ; Process is not running - start the application
+    MsgBox($MB_SYSTEMMODAL, "Process Check", "The process '" & $processName & "' is not running." & @CRLF & _
+        "Starting the application...")
+    
+    ; Run the application
+    $pid = Run($applicationPath)
+    
+    If $pid = 0 Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Failed to start the application: " & $applicationPath)
+    Else
+        MsgBox($MB_SYSTEMMODAL, "Success", "Application started successfully." & @CRLF & _
+            "Process ID: " & $pid)
+    EndIf
+EndIf
+
+; Problem 14: A script that deletes all files in the system's temporary folder and displays a summary of the number of files deleted.
+#include <MsgBoxConstants.au3>
+#include <File.au3>
+#include <Array.au3>
+
+; Define the temp folder path
+$tempFolderPath = @TempDir
+
+; Initialize counters
+$fileCount = 0
+$deletedCount = 0
+$errorCount = 0
+
+; Display confirmation dialog
+$confirmDelete = MsgBox($MB_YESNO + $MB_ICONQUESTION, "Confirm Action", "This script will delete all files in the system's temporary folder:" & @CRLF & _
+    $tempFolderPath & @CRLF & @CRLF & _
+    "Do you want to continue?")
+
+If $confirmDelete = $IDNO Then
+    Exit
+EndIf
+
+; Get a list of all files in the temp folder
+$fileSearch = FileFindFirstFile($tempFolderPath & "\*.*")
+If $fileSearch = -1 Then
+    MsgBox($MB_SYSTEMMODAL, "Information", "No files found in the temporary folder: " & $tempFolderPath)
+    Exit
+EndIf
+
+; Process all files
+While 1
+    $file = FileFindNextFile($fileSearch)
+    If @error Then ExitLoop
+    
+    ; Skip directories and system files
+    If @extended Then ContinueLoop
+    
+    $fileCount += 1
+    $filePath = $tempFolderPath & "\" & $file
+    
+    ; Try to delete the file
+    If FileDelete($filePath) Then
+        $deletedCount += 1
+    Else
+        $errorCount += 1
+    EndIf
+WEnd
+
+; Close the search handle
+FileClose($fileSearch)
+
+; Display summary
+MsgBox($MB_SYSTEMMODAL, "Operation Complete", "Temporary file cleanup summary:" & @CRLF & @CRLF & _
+    "Total files found: " & $fileCount & @CRLF & _
+    "Successfully deleted: " & $deletedCount & @CRLF & _
+    "Failed to delete (in use or access denied): " & $errorCount)
+
+; Problem 15: A script with an input box where the user can specify the number of minutes after which the system should shut down.
+#include <MsgBoxConstants.au3>
+#include <ButtonConstants.au3>
+#include <EditConstants.au3>
+#include <GUIConstantsEx.au3>
+#include <WindowsConstants.au3>
+
+; Create the GUI
+$Form = GUICreate("System Shutdown Timer", 380, 170)
+$Label = GUICtrlCreateLabel("Enter the number of minutes before shutdown:", 20, 20, 340, 20)
+$Input = GUICtrlCreateInput("", 120, 50, 140, 25, $ES_NUMBER)
+$SetButton = GUICtrlCreateButton("Set Shutdown Timer", 50, 90, 140, 30)
+$CancelButton = GUICtrlCreateButton("Cancel Shutdown", 200, 90, 130, 30)
+$ExitButton = GUICtrlCreateButton("Exit", 150, 130, 80, 30)
+GUISetState(@SW_SHOW)
+
+; Initialize shutdown status
+$shutdownActive = False
+
+; GUI Message Loop
+While 1
+    $nMsg = GUIGetMsg()
+    Switch $nMsg
+        Case $GUI_EVENT_CLOSE, $ExitButton
+            Exit
+        Case $SetButton
+            SetShutdownTimer()
+        Case $CancelButton
+            CancelShutdown()
+    EndSwitch
+WEnd
+
+Func SetShutdownTimer()
+    ; Get the minutes value
+    $minutes = Number(GUICtrlRead($Input))
+    
+    ; Validate input
+    If $minutes <= 0 Then
+        MsgBox($MB_SYSTEMMODAL, "Error", "Please enter a positive number of minutes.")
+        Return
+    EndIf
+    
+    ; Convert minutes to seconds
+    $seconds = $minutes * 60
+    
+    ; Set up shutdown command
+    $result = RunWait(@ComSpec & " /c shutdown /s /t " & $seconds, "", @SW_HIDE)
+    
+    If $result = 0 Then
+        ; Update status
+        $shutdownActive = True
+        
+        ; Calculate shutdown time
+        $shutdownTime = _NowCalc()
+        $shutdownTime = _DateAdd('n', $minutes, $shutdownTime)
+        
+        ; Display confirmation
+        MsgBox($MB_SYSTEMMODAL, "Shutdown Scheduled", "System will shut down in " & $minutes & " minutes." & @CRLF & _
+            "Shutdown time: " & $shutdownTime & @CRLF & @CRLF & _
+            "You can cancel the shutdown by clicking the 'Cancel Shutdown' button.")
+    Else
+        MsgBox($MB_SYSTEMMODAL, "Error", "Failed to schedule shutdown.")
+    EndIf
+EndFunc
+
+Func CancelShutdown()
+    ; Cancel any pending shutdown
+    $result = RunWait(@ComSpec & " /c shutdown /a", "", @SW_HIDE)
+    
+    If $result = 0 Then
+        ; Update status
+        $shutdownActive = False
+        
+        ; Display confirmation
+        MsgBox($MB_SYSTEMMODAL, "Shutdown Cancelled", "The scheduled shutdown has been cancelled.")
+    Else
+        MsgBox($MB_SYSTEMMODAL, "Error", "Failed to cancel shutdown or no shutdown was scheduled.")
+    EndIf
+EndFunc
