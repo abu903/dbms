@@ -1,4 +1,50 @@
-/****************************************************************
+// 1. Write a Java program to swap two numbers.  
+// 2. Write a program to print all elements of the Fibonacci series.  
+// 3. Check if a given number is a palindrome or not.  
+// 4. Write a program to reverse a string.  
+// 5. Create a class `Student2` with methods `getData()` and `printData()`. Display the data using another class `STest`.  
+// 6. Write a Java program to generate an abstract class `A`. Class `B` inherits `A` and displays "call me from B".  
+// 7. Create an abstract class `Vehicle`. Inherit it with `Car` and `Truck`. Display "Car has a good engine" and "Truck has a bad engine".  
+// 8. Accept numbers from command line arguments. If the first and second numbers are not entered, generate an exception. Also, divide the first number by the second and handle any arithmetic exceptions.  
+// 9. Create a Java program with a thread that sleeps for 5 seconds and then changes the name of the thread.  
+// 10. Read and append a file and display the content on the screen.  
+// 11. Demonstrate AWT components like label, text field, text area, button, checkbox, and radio button.  
+// 12. Demonstrate different types of layout in AWT.  
+// 13. Write a Java program to display characters from A to Z.  
+// 14. Write a Java program to display all vowels from a given string.  
+// 15. Check whether a given number is something or not (use static keyword).  
+// 16. Display alternate characters from a given string.  
+// 17. Write a Java program to print the given number pattern:
+//    5  
+//    45  
+//    3450  
+//    2345  
+//    12345  
+// 18. Define an interface `Shape` with an abstract method `area()`. Implement it to calculate the area of a circle and a sphere.  
+// 19. Validate PAN and mobile numbers. If invalid, throw a user-defined exception "Invalid data", otherwise display it.  
+// 20. Count the frequency of each character in a given string.  
+// 21. Write a menu-driven program using command line arguments (`+`, `-`, `÷`, `×`).  
+// 22. Print the following pattern:
+//    1  
+//    01  
+//    010  
+//    1010  
+// 23. Copy only non-human-readable data from one file to another file.  
+// 24. Display all `.txt` files from a given directory.  
+// 25. Accept and display employee details (`eno`, `ename`, `cell`) using AWT.  
+// 26. Perform file operations:  
+//     a) Create a file  
+//     b) Rename a file  
+//     c) Delete a file  
+//     d) Display the file path  
+// 27. Create a package `SUBSCIT` with two classes:  
+//     - `Student` (rno, sname, per) with `disp()` method  
+//     - `Teacher` (tid, tname, subj) with `disp()` method  
+// 28. Accept a number from the user. If it is greater than 1000, throw an exception **"No. is out of range"**; otherwise, display its factors.  
+// 29. Write a Java program to display compounding interest for every year.  
+// 30. Accept the age from the user and check voting eligibility.  
+
+
  * Exercise 1: Write a program to swap two numbers in Java
  ****************************************************************/
 public class SwapNumbers {
