@@ -1,0 +1,221 @@
+Demonstration of stack using list in python
+1.	Insertion
+
+print("Insertion in Stack");
+print("Stack elements are following: ");
+stack = [1, 2, 3, 4, 5];
+print(stack);
+stack.append(6);
+print("After insertion in Stack");
+print(stack);
+ 
+
+2.	Deletion
+
+print("Deletion in Stack")
+print("Stack elements are following: ");
+stack = [1, 2, 3, 4, 5];
+print(stack);
+stack.pop();
+print("After deletion in Stack");
+print(stack);
+ 
+
+
+3.	 Size of the Element
+
+print("Stack elements are following: ");
+stack = [1, 2, 3, 4, 5];
+print(stack);
+print("size of the elements in stack");
+print(len(stack));
+4.	Top Element
+
+print("Stack elements are following: ");
+stack = [1, 2, 3, 4, 5];
+print(stack);
+print("Top element of the stack is ")
+print(stack[-1]);
+
+Practical 2
+
+                                     2A. Demonstration of Queue
+1.  Insertion
+
+print("Insertion in Queue");
+print("Following are queue elements");
+Queue = [1, 2, 3, 4, 5];
+print(Queue);
+print("After insertion in Queue");
+Queue.append(6);
+print(Queue);
+
+2. Deletion
+
+print("Deletion in Queue");
+print("Following are queue elements");
+Queue = [1, 2, 3, 4, 5];
+print(Queue);
+print("After deletion in Queue");
+Queue.pop(0);
+print(Queue);
+ 
+
+3. Size
+print("Following are queue elements");
+Queue = [1, 2, 3, 4, 5];
+print(Queue);
+print("Size of Queue");
+print(len(Queue));
+
+                                  2B. Demonstration of Queue using Deque
+1.	Insertion
+from collections import deque;
+ 
+print("Following are the Queue elements");
+Queue = deque([1, 2, 3, 4, 5]);
+print(list(Queue));
+Queue.append(6);
+print("After insertion using deque");
+print(list(Queue));
+
+2.	Deletion
+
+from collections import deque;
+ 
+print("Following are the Queue elements");
+Queue = deque([1, 2, 3, 4, 5]);
+print(list(Queue));
+ 
+print("After deletion from Queue using deque");
+print("Deleted element is: " , Queue.popleft());
+print(list(Queue));
+
+3.	Size
+from collections import deque;
+print("Following are the Queue elements");
+Queue = deque([1, 2, 3, 4, 5]);
+print(list(Queue));
+print("Size of the Queue is ");
+print(len(Queue));
+
+                                     A) Linear Search (Using Python)
+Code:
+arr=[3, 7, 2, 9, 5]
+tVal=int(input("Enter Value:"));
+def lin_ser(arr, tVal):
+ for i in range(len(arr)):
+ if arr[i] == tVal:
+ return i
+ return -1
+sol=lin_ser(arr,tVal);
+print("Value :",tVal, "found at" ,sol);
+
+                                               A) Factorial (Using Python)
+
+def fac(a):
+    if a == 1 or a == 0:  # Factorial of 1 and 0 is 1
+        print("Factorial =", 1)
+    else:
+        fact = 1
+        while a >= 1:
+            fact *= a
+            a -= 1
+        print("Factorial =", fact)
+
+a = int(input("Enter a number: "))
+fac(a)
+
+                             B) Fibonacci series (Using Python)
+Code:
+count=int(input("Terms of Fibonacci series:"))
+def fibonacc(count):
+i=1;
+n1=0;
+n2=1;
+n3=0;
+print("Fibonacci :" , n1 , ", " , n2,end="");
+while(i<=count):
+ n3=n1+n2;
+ print(",",n3,end="");
+ n1=n2
+ n2=n3;
+ i=i+1;
+ans=fibonacc(count);
+
+
+
+                                    A)    Binary Search (Using Python)
+Code:
+def binarySearch(arr, tval):
+ # position of list starts from 0
+ left = 0
+ #position of list starting from 0 that’s why (-1) from len(arr)
+ right = len(arr) - 1 # done to start counting from 0
+ while left <= right:
+ mid = (left + right) // 2 #Integer Division
+ if (arr[mid] == tval):
+ return mid
+
+ elif (arr[mid] < tval):
+ left = mid + 1
+ else:
+ right = mid - 1
+ return -1
+arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+tval=int(input("Enter the Value to serach = "))
+result = binarySearch(arr, tval)
+if result!= -1:
+ print("Value :",tval," is found at index :", result)
+else:
+print("Value not found in array : ",result)
+
+
+                                         Operations on Array
+A = [1, 2, 3, 4, 5, 6]
+print("Accessing the element from an array")
+print(A[1])
+print("Traversing an array")
+for i in A:
+    print(i)
+print("Deleting the element from an array")
+A.pop(0)
+print("Deleting the start element", A)
+A.pop()
+print("Deleting the end element ", A)
+A.remove(4)
+print("Removing 4 from an array", A)
+print("Inserting an element in an array")
+A.append(7)
+print("At the end ",A)
+A.insert(0, 1)
+print("At the start ", A)
+
+
+
+                                              Insertion Sort
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j = j - 1
+        arr[j + 1] = key
+arr = [3, 1, 5, 4, 6, 2]
+insertion_sort(arr)
+print("Sorted array:", arr)
+
+
+                                                    Bubble Sort
+def bubble_sort(arr): 
+n = len(arr) 
+for i in range(n): 
+for j in range(0, n-i-1): 
+if arr[j] > arr[j+1]: 
+arr[j], arr[j+1] = arr[j+1], arr[j] 
+if name == "main": 
+arr = [2, 8, 3, 1, 7, 6, 4, 5] 
+print("Original array:", arr) 
+bubble_sort(arr) 
+print("Sorted array:", arr)
